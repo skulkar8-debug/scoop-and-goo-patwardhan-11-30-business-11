@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoop & Goo | Instant Recovery, Zero Wait</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #08003b;
+            --accent-orange: #ff7f00;
+            --black: #000000;
+            --white: #ffffff;
+            --light-gray: #f5f5f7;
+            --gradient-energy: linear-gradient(135deg, #08003b 0%, #1a0066 50%, #08003b 100%);
+            --gradient-orange: linear-gradient(135deg, #ff7f00 0%, #ff9933 100%);
+            --shadow-soft: 0 10px 40px rgba(8, 0, 59, 0.15);
+            --shadow-intense: 0 20px 60px rgba(8, 0, 59, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--primary-blue);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-blue);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-orange);
+            border-radius: 4px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(8, 0, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 127, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav.scrolled {
+            padding: 0.7rem 5%;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient-orange);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--white);
+            border-radius: 50%;
+            top: 8px;
+            left: 8px;
+            opacity: 0.9;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            bottom: 10px;
+            right: 8px;
+        }
+
+        .logo-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: var(--white);
+            letter-spacing: 2px;
+        }
+
+        .logo-text span {
+            color: var(--accent-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-orange);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-orange);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-orange);
+            color: var(--white);
+            box-shadow: 0 4px 20px rgba(255, 127, 0, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 127, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 2px;
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 5% 80px;
+            position: relative;
+            overflow: hidden;
+            background: var(--gradient-energy);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(255, 127, 0, 0.08) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, var(--primary-blue), transparent);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            max-width: 650px;
+            position: relative;
+            z-index: 2;
+            animation: slideInLeft 1s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 127, 0, 0.15);
+            border: 1px solid rgba(255, 127, 0, 0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            color: var(--accent-orange);
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            line-height: 1;
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            color: var(--accent-orange);
+            position: relative;
+        }
+
+        .hero-tagline {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-tagline strong {
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin: 3rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--accent-orange);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.3rem;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            animation: floatIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(-50%) translateX(50px); }
+            to { opacity: 1; transform: translateY(-50%) translateX(0); }
+        }
+
+        .vending-machine {
+            width: 350px;
+            height: 550px;
+            background: linear-gradient(145deg, #0d0052, #050024);
+            border-radius: 30px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 
+                0 50px 100px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .machine-screen {
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-radius: 20px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .machine-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), transparent);
+        }
+
+        .screen-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: var(--accent-orange);
+            letter-spacing: 3px;
+            animation: screenGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes screenGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 127, 0, 0.5); }
+            50% { text-shadow: 0 0 40px rgba(255, 127, 0, 0.8); }
+        }
+
+        .timer-display {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            color: var(--white);
+            margin-top: 10px;
+        }
+
+        .timer-display span {
+            color: var(--accent-orange);
+        }
+
+        .flavor-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .flavor-slot {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .flavor-slot:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 20px rgba(255, 127, 0, 0.3);
+        }
+
+        .flavor-slot.active {
+            border-color: var(--accent-orange);
+            background: rgba(255, 127, 0, 0.2);
+        }
+
+        .dispense-area {
+            background: linear-gradient(180deg, #0a0a15 0%, #000 100%);
+            border-radius: 15px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dispense-area::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: var(--accent-orange);
+            box-shadow: 0 0 20px var(--accent-orange);
+        }
+
+        .shake-cup {
+            width: 50px;
+            height: 70px;
+            background: linear-gradient(to right, #e0e0e0, #fff, #e0e0e0);
+            border-radius: 5px 5px 8px 8px;
+            position: relative;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .shake-cup::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            right: 5px;
+            bottom: 15px;
+            background: linear-gradient(to bottom, #c4a574, #8b6914);
+            border-radius: 3px;
+        }
+
+        /* Payment Icons Section */
+        .payment-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .payment-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .payment-icons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .payment-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .upi-icon {
+            background: linear-gradient(135deg, #5f259f, #3d1a6d);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upi-icon::before {
+            content: 'UPI';
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .card-icon {
+            background: linear-gradient(135deg, #1a1f71, #00579f);
+            position: relative;
+        }
+
+        .card-icon::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #eb001b;
+            border-radius: 50%;
+            left: 12px;
+        }
+
+        .card-icon::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #f79e1b;
+            border-radius: 50%;
+            left: 22px;
+            opacity: 0.8;
+        }
+
+        .rupay-icon {
+            background: linear-gradient(135deg, #097969, #228b22);
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* How It Works Section */
+        .section {
+            padding: 100px 5%;
+            position: relative;
+        }
+
+        .section-light {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            opacity: 0.7;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-title span {
+            color: var(--accent-orange);
+        }
+
+        .how-it-works {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 80px;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-orange), var(--accent-orange), transparent);
+            z-index: 0;
+        }
+
+        .step-card {
+            background: var(--light-gray);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            width: 280px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .step-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-intense);
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            color: var(--white);
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(255, 127, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover .step-number {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .step-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-card h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.8rem;
+            color: var(--primary-blue);
+        }
+
+        .step-card p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .step-time {
+            display: inline-block;
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Why Choose Us */
+        .why-section {
+            background: var(--gradient-energy);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff7f00' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: var(--accent-orange);
+            transition: height 0.4s ease;
+        }
+
+        .benefit-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            border-color: rgba(255, 127, 0, 0.3);
+        }
+
+        .benefit-card:hover::before {
+            height: 100%;
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-card h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.8rem;
+            color: var(--accent-orange);
+        }
+
+        .benefit-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Products Section */
+        .products-section {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .flavor-selector {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .flavor-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .flavor-tab {
+            padding: 1rem 2rem;
+            border: 2px solid var(--primary-blue);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--primary-blue);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flavor-tab:hover,
+        .flavor-tab.active {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--light-gray);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            border-color: var(--accent-orange);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .product-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .product-card h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .product-card .type {
+            font-size: 0.8rem;
+            color: var(--accent-orange);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .nutrition-mini {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .nutrition-mini span {
+            background: var(--white);
+            padding: 0.3rem 0.6rem;
+            border-radius: 10px;
+        }
+
+        .product-price {
+            margin-top: 1rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent-orange);
+        }
+
+        /* Nutrition Section */
+        .nutrition-section {
+            background: var(--primary-blue);
+            position: relative;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .nutrition-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nutrition-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            color: var(--accent-orange);
+            line-height: 1;
+        }
+
+        .nutrition-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        .nutrition-card .sub {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.3rem;
+        }
+
+        /* Hygiene Section */
+        .hygiene-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--primary-blue);
+        }
+
+        .hygiene-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hygiene-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .hygiene-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .hygiene-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-orange);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .hygiene-content h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .hygiene-content p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .fssai-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+            padding: 1.5rem 2rem;
+            background: var(--white);
+            border-radius: 15px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .fssai-logo {
+            width: 80px;
+            height: 50px;
+            background: #006837;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .fssai-text {
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        /* Business Section */
+        .business-section {
+            background: var(--gradient-energy);
+            position: relative;
+        }
+
+        .business-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .business-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .business-header h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            letter-spacing: 3px;
+        }
+
+        .business-header h2 span {
+            color: var(--accent-orange);
+        }
+
+        .earnings-highlight {
+            display: inline-block;
+            background: var(--gradient-orange);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .process-step {
+            text-align: center;
+            max-width: 200px;
+        }
+
+        .process-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--accent-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .process-step:hover .process-icon {
+            background: var(--accent-orange);
+            transform: scale(1.1);
+        }
+
+        .process-step h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .process-step p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .process-arrow {
+            font-size: 2rem;
+            color: var(--accent-orange);
+            margin-top: 2rem;
+            animation: arrowPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { transform: translateX(0); opacity: 1; }
+            50% { transform: translateX(10px); opacity: 0.5; }
+        }
+
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .benefit-item .check {
+            width: 30px;
+            height: 30px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .requirements-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .requirements-box h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--accent-orange);
+        }
+
+        .req-items {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .req-item {
+            text-align: center;
+        }
+
+        .req-item .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .req-item span {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-form {
+            background: var(--light-gray);
+            border-radius: 30px;
+            padding: 3rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 4px rgba(255, 127, 0, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--gradient-orange);
+            color: var(--white);
+            border: none;
+            border-radius: 15px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 127, 0, 0.4);
+        }
+
+        .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            width: 100%;
+            padding: 1rem;
+            background: #25D366;
+            color: var(--white);
+            border: none;
+            border-radius: 15px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        .whatsapp-icon {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #25D366;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 60px 5% 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        .footer-section h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            color: var(--accent-orange);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--accent-orange);
+        }
+
+        .footer-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-contact-item .icon {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 127, 0, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-payment {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .hero-visual {
+                display: none;
+            }
+
+            .hero-content {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-ctas {
+                justify-content: center;
+            }
+
+            .steps-container::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .hero {
+                padding: 100px 5% 60px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .section {
+                padding: 60px 5%;
+            }
+
+            .process-arrow {
+                transform: rotate(90deg);
+            }
+
+            .contact-form {
+                padding: 2rem 1.5rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animations on scroll */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading animation */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--white);
+            letter-spacing: 5px;
+            animation: loaderPulse 1.5s ease-in-out infinite;
+        }
+
+        .loader-logo span {
+            color: var(--accent-orange);
+        }
+
+        @keyframes loaderPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .loader-bar::after {
+            content: '';
+            display: block;
+            width: 50%;
+            height: 100%;
+            background: var(--accent-orange);
+            border-radius: 2px;
+            animation: loaderProgress 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loaderProgress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-logo">SCOOP <span>&</span> GOO</div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <a href="#" class="logo">
+            <div class="logo-icon"></div>
+            <div class="logo-text">SCOOP <span>&</span> GOO</div>
+        </a>
+        <div class="nav-links">
+            <a href="#how-it-works">How It Works</a>
+            <a href="#products">Products</a>
+            <a href="#hygiene">Hygiene</a>
+            <a href="#business">For Business</a>
+            <a href="#contact" class="btn btn-primary">Partner With Us</a>
+        </div>
+        <div class="mobile-menu-btn" id="mobileMenuBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Now Launching in Maharashtra
+            </div>
+            <h1>INSTANT RECOVERY<br><span>ZERO WAIT</span></h1>
+            <p class="hero-tagline">
+                Fresh protein shakes from smart vending machines. 
+                <strong>30 seconds</strong>. That's all it takes. 
+                As quick as your neighborhood <strong>chai-wallah</strong>.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">30<span>sec</span></div>
+                    <div class="stat-label">Shake Ready</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">₹120+</div>
+                    <div class="stat-label">Starting Price</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Available</div>
+                </div>
+            </div>
+            <div class="hero-ctas">
+                <a href="#contact" class="btn btn-primary">
+                    🏢 Partner With Us
+                </a>
+                <a href="#how-it-works" class="btn btn-secondary">
+                    See How It Works
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="vending-machine">
+                <div class="machine-screen">
+                    <div class="screen-text">SELECT FLAVOR</div>
+                    <div class="timer-display">00:<span id="timer">30</span></div>
+                </div>
+                <div class="flavor-slots">
+                    <div class="flavor-slot" data-flavor="chocolate">🍫</div>
+                    <div class="flavor-slot active" data-flavor="vanilla">🍦</div>
+                    <div class="flavor-slot" data-flavor="strawberry">🍓</div>
+                    <div class="flavor-slot" data-flavor="banana">🍌</div>
+                    <div class="flavor-slot" data-flavor="mango">🥭</div>
+                    <div class="flavor-slot" data-flavor="coffee">☕</div>
+                </div>
+                <div class="dispense-area">
+                    <div class="shake-cup"></div>
+                </div>
+                <div class="payment-section">
+                    <span class="payment-label">Pay via</span>
+                    <div class="payment-icons">
+                        <div class="payment-icon upi-icon"></div>
+                        <div class="payment-icon card-icon"></div>
+                        <div class="payment-icon rupay-icon">RuPay</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section how-it-works" id="how-it-works">
+        <div class="section-title">
+            <h2>PROTEIN IN <span>60 SECONDS</span></h2>
+            <p>Faster than ordering chai. Simpler than making Maggi.</p>
+        </div>
+        <div class="steps-container">
+            <div class="step-card animate-on-scroll">
+                <div class="step-number">1</div>
+                <div class="step-icon">📱</div>
+                <h3>SCAN & PAY</h3>
+                <p>Quick UPI scan or tap your card. No app download needed.</p>
+                <span class="step-time">5 seconds</span>
+            </div>
+            <div class="step-card animate-on-scroll">
+                <div class="step-number">2</div>
+                <div class="step-icon">🎯</div>
+                <h3>CHOOSE FLAVOR</h3>
+                <p>Select your protein type and favorite flavor from the screen.</p>
+                <span class="step-time">10 seconds</span>
+            </div>
+            <div class="step-card animate-on-scroll">
+                <div class="step-number">3</div>
+                <div class="step-icon">🥤</div>
+                <h3>GRAB & GO</h3>
+                <p>Fresh shake dispensed instantly. Perfect for post-workout recovery.</p>
+                <span class="step-time">15 seconds</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="section why-section">
+        <div class="section-title">
+            <h2>WHY <span>SCOOP & GOO</span>?</h2>
+            <p>Built for the fitness-first generation of India</p>
+        </div>
+        <div class="benefits-grid">
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon">⚡</div>
+                <h3>LIGHTNING FAST</h3>
+                <p>30-second shakes. No waiting, no mixing, no mess. Faster than your pre-workout kicks in.</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon">💰</div>
+                <h3>POCKET FRIENDLY</h3>
+                <p>Starting at just ₹120. Premium protein at street-food prices. Your wallet will thank you.</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon">🕐</div>
+                <h3>24/7 AVAILABLE</h3>
+                <p>Early morning cardio or midnight gains - we're always ready when you are.</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon">🧼</div>
+                <h3>FSSAI CERTIFIED</h3>
+                <p>Food-grade containers, filtered water, daily sanitization. As clean as maa ke haath ka khana.</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon">📍</div>
+                <h3>RIGHT AT YOUR GYM</h3>
+                <p>No detours. No delays. Grab your shake exactly where you train.</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon">🎯</div>
+                <h3>MULTIPLE OPTIONS</h3>
+                <p>Whey, plant-based, low-sugar - choose what fits your fitness journey.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="section products-section" id="products">
+        <div class="section-title">
+            <h2>PICK YOUR <span>POWER</span></h2>
+            <p>Premium proteins, delicious flavors, transparent nutrition</p>
+        </div>
+        <div class="flavor-selector">
+            <div class="flavor-tabs">
+                <button class="flavor-tab active" data-type="whey">Whey Protein</button>
+                <button class="flavor-tab" data-type="plant">Plant Protein</button>
+                <button class="flavor-tab" data-type="lowsugar">Low Sugar</button>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Nutrition Section -->
+    <section class="section nutrition-section">
+        <div class="section-title">
+            <h2>CLEAN <span>NUTRITION</span></h2>
+            <p>No fillers. No hidden ingredients. Just gains.</p>
+        </div>
+        <div class="nutrition-grid">
+            <div class="nutrition-card animate-on-scroll">
+                <div class="nutrition-value">24-30g</div>
+                <div class="nutrition-label">Protein per Shake</div>
+                <div class="sub">Complete amino profile</div>
+            </div>
+            <div class="nutrition-card animate-on-scroll">
+                <div class="nutrition-value">150-220</div>
+                <div class="nutrition-label">Calories</div>
+                <div class="sub">Balanced energy</div>
+            </div>
+            <div class="nutrition-card animate-on-scroll">
+                <div class="nutrition-value">&lt;5g</div>
+                <div class="nutrition-label">Sugar</div>
+                <div class="sub">Low sugar options available</div>
+            </div>
+            <div class="nutrition-card animate-on-scroll">
+                <div class="nutrition-value">100%</div>
+                <div class="nutrition-label">Transparency</div>
+                <div class="sub">Full label on every cup</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hygiene Section -->
+    <section class="section hygiene-section" id="hygiene">
+        <div class="section-title">
+            <h2>HYGIENE YOU CAN <span>TRUST</span></h2>
+            <p>Because we know Indians don't compromise on cleanliness</p>
+        </div>
+        <div class="hygiene-grid">
+            <div class="hygiene-card animate-on-scroll">
+                <div class="hygiene-icon">🧹</div>
+                <div class="hygiene-content">
+                    <h4>DAILY CLEANING SOP</h4>
+                    <p>Every machine sanitized daily following strict protocols. Cleaner than your kitchen counter.</p>
+                </div>
+            </div>
+            <div class="hygiene-card animate-on-scroll">
+                <div class="hygiene-icon">🫙</div>
+                <div class="hygiene-content">
+                    <h4>FOOD-GRADE CONTAINERS</h4>
+                    <p>Sealed, airtight protein storage. No contamination, no compromise.</p>
+                </div>
+            </div>
+            <div class="hygiene-card animate-on-scroll">
+                <div class="hygiene-icon">💧</div>
+                <div class="hygiene-content">
+                    <h4>RO FILTERED WATER</h4>
+                    <p>Only purified water makes it to your shake. As clean as bottled.</p>
+                </div>
+            </div>
+            <div class="hygiene-card animate-on-scroll">
+                <div class="hygiene-icon">🔧</div>
+                <div class="hygiene-content">
+                    <h4>REGULAR SERVICING</h4>
+                    <p>Scheduled maintenance and audits. Our machines stay in top condition.</p>
+                </div>
+            </div>
+        </div>
+        <div class="fssai-badge animate-on-scroll">
+            <div class="fssai-logo">FSSAI</div>
+            <div class="fssai-text">
+                <strong>FSSAI Registered</strong><br>
+                Government certified food safety
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Section -->
+    <section class="section business-section" id="business">
+        <div class="business-content">
+            <div class="business-header">
+                <h2>TURN <span>3 SQ FT</span> INTO MONTHLY INCOME</h2>
+                <p style="color: rgba(255,255,255,0.8); margin-top: 1rem;">Zero investment. Zero hassle. Just passive income.</p>
+                <div class="earnings-highlight">
+                    💰 Gyms earn ₹15,000 – ₹40,000/month per machine
+                </div>
+            </div>
+
+            <h3 style="text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px; margin-bottom: 2rem; color: var(--accent-orange);">HOW WE WORK</h3>
+            
+            <div class="process-flow">
+                <div class="process-step animate-on-scroll">
+                    <div class="process-icon">📞</div>
+                    <h4>YOU CONTACT US</h4>
+                    <p>Fill the form or WhatsApp us</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-step animate-on-scroll">
+                    <div class="process-icon">📍</div>
+                    <h4>WE VISIT</h4>
+                    <p>Site assessment at your location</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-step animate-on-scroll">
+                    <div class="process-icon">🔧</div>
+                    <h4>WE INSTALL</h4>
+                    <p>Machine setup in 10-14 days</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-step animate-on-scroll">
+                    <div class="process-icon">💸</div>
+                    <h4>YOU EARN</h4>
+                    <p>Monthly revenue share begins</p>
+                </div>
+            </div>
+
+            <div class="benefits-list">
+                <div class="benefit-item animate-on-scroll">
+                    <span class="check">✓</span>
+                    <span>No capital investment required</span>
+                </div>
+                <div class="benefit-item animate-on-scroll">
+                    <span class="check">✓</span>
+                    <span>No staff or inventory management</span>
+                </div>
+                <div class="benefit-item animate-on-scroll">
+                    <span class="check">✓</span>
+                    <span>Revenue share or fixed rent options</span>
+                </div>
+                <div class="benefit-item animate-on-scroll">
+                    <span class="check">✓</span>
+                    <span>Premium experience for your members</span>
+                </div>
+                <div class="benefit-item animate-on-scroll">
+                    <span class="check">✓</span>
+                    <span>We handle all maintenance & refills</span>
+                </div>
+                <div class="benefit-item animate-on-scroll">
+                    <span class="check">✓</span>
+                    <span>Free 30-day pilot program</span>
+                </div>
+            </div>
+
+            <div class="requirements-box animate-on-scroll">
+                <h4>PLACEMENT REQUIREMENTS</h4>
+                <div class="req-items">
+                    <div class="req-item">
+                        <div class="icon">📐</div>
+                        <span>3ft × 3ft space</span>
+                    </div>
+                    <div class="req-item">
+                        <div class="icon">🔌</div>
+                        <span>One 5A power socket</span>
+                    </div>
+                    <div class="req-item">
+                        <div class="icon">📍</div>
+                        <span>Near exit/reception</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact-section" id="contact">
+        <div class="section-title">
+            <h2>PARTNER WITH <span>SCOOP & GOO</span></h2>
+            <p>Let's bring instant protein to your gym</p>
+        </div>
+        <div class="contact-container">
+            <form class="contact-form" id="partnerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Your Name *</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="+91 XXXXX XXXXX">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="gymName">Gym / Fitness Center Name *</label>
+                    <input type="text" id="gymName" name="gymName" required placeholder="Enter gym name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <select id="city" name="city" required>
+                            <option value="">Select City</option>
+                            <option value="Chhatrapati Sambhaji Nagar">Chhatrapati Sambhaji Nagar</option>
+                            <option value="Pune">Pune</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Nashik">Nashik</option>
+                            <option value="Nagpur">Nagpur</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="footfall">Monthly Footfall</label>
+                        <select id="footfall" name="footfall">
+                            <option value="">Select Range</option>
+                            <option value="<500">Less than 500</option>
+                            <option value="500-1000">500 - 1,000</option>
+                            <option value="1000-2000">1,000 - 2,000</option>
+                            <option value="2000+">2,000+</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="message">Additional Message</label>
+                    <textarea id="message" name="message" placeholder="Tell us about your gym..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">REQUEST FREE PILOT →</button>
+                <a href="https://wa.me/919876543210?text=Hi! I'm interested in Scoop & Goo for my gym." class="whatsapp-btn" target="_blank">
+                    <span class="whatsapp-icon">W</span>
+                    Chat With Us on WhatsApp
+                </a>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon"></div>
+                    <div class="logo-text">SCOOP <span>&</span> GOO</div>
+                </a>
+                <p>Instant protein shakes from smart vending machines. Making post-workout nutrition as quick as your local chai.</p>
+                <div class="payment-section" style="margin-top: 1.5rem; background: rgba(255,255,255,0.05);">
+                    <span class="payment-label">We Accept</span>
+                    <div class="payment-icons">
+                        <div class="payment-icon upi-icon"></div>
+                        <div class="payment-icon card-icon"></div>
+                        <div class="payment-icon rupay-icon">RuPay</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>QUICK LINKS</h4>
+                <ul>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#hygiene">Hygiene Standards</a></li>
+                    <li><a href="#business">For Gym Owners</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>LEGAL</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                    <li><a href="#">FSSAI Compliance</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>CONTACT</h4>
+                <div class="footer-contact-item">
+                    <span class="icon">📍</span>
+                    <span>Chhatrapati Sambhaji Nagar, Maharashtra</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="icon">📧</span>
+                    <span>hello@scoopandgoo.com</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="icon">📞</span>
+                    <span>+91 98765 43210</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Scoop & Goo™. All rights reserved.</p>
+            <p>Made with 💪 for India's fitness community</p>
+        </div>
+    </footer>
+
+    <script>
+        // Page Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Timer animation
+        let timerValue = 30;
+        const timerElement = document.getElementById('timer');
+        setInterval(() => {
+            timerValue--;
+            if (timerValue < 0) timerValue = 30;
+            timerElement.textContent = timerValue.toString().padStart(2, '0');
+        }, 1000);
+
+        // Flavor slot interaction
+        const flavorSlots = document.querySelectorAll('.flavor-slot');
+        flavorSlots.forEach(slot => {
+            slot.addEventListener('click', () => {
+                flavorSlots.forEach(s => s.classList.remove('active'));
+                slot.classList.add('active');
+            });
+        });
+
+        // Products data
+        const products = {
+            whey: [
+                { name: 'Chocolate Thunder', emoji: '🍫', protein: '26g', cal: '180', price: '₹140' },
+                { name: 'Vanilla Dream', emoji: '🍦', protein: '25g', cal: '170', price: '₹130' },
+                { name: 'Strawberry Blast', emoji: '🍓', protein: '24g', cal: '165', price: '₹130' },
+                { name: 'Mango Lassi', emoji: '🥭', protein: '25g', cal: '175', price: '₹150' },
+                { name: 'Coffee Kick', emoji: '☕', protein: '26g', cal: '185', price: '₹160' },
+                { name: 'Banana Boost', emoji: '🍌', protein: '24g', cal: '170', price: '₹130' }
+            ],
+            plant: [
+                { name: 'Pea Power', emoji: '🌱', protein: '22g', cal: '160', price: '₹150' },
+                { name: 'Soy Supreme', emoji: '🫘', protein: '24g', cal: '155', price: '₹145' },
+                { name: 'Hemp Hero', emoji: '🌿', protein: '20g', cal: '150', price: '₹160' },
+                { name: 'Mixed Greens', emoji: '🥬', protein: '21g', cal: '145', price: '₹155' }
+            ],
+            lowsugar: [
+                { name: 'Lean Chocolate', emoji: '🍫', protein: '28g', cal: '140', price: '₹160' },
+                { name: 'Pure Vanilla', emoji: '🍦', protein: '27g', cal: '135', price: '₹155' },
+                { name: 'Clean Coffee', emoji: '☕', protein: '26g', cal: '130', price: '₹165' },
+                { name: 'Natural Almond', emoji: '🥜', protein: '25g', cal: '145', price: '₹170' }
+            ]
+        };
+
+        // Render products
+        function renderProducts(type) {
+            const grid = document.getElementById('productsGrid');
+            const typeLabels = { whey: 'WHEY', plant: 'PLANT', lowsugar: 'LOW SUGAR' };
+            grid.innerHTML = products[type].map(p => `
+                <div class="product-card">
+                    <span class="product-emoji">${p.emoji}</span>
+                    <h4>${p.name}</h4>
+                    <div class="type">${typeLabels[type]}</div>
+                    <div class="nutrition-mini">
+                        <span>${p.protein} protein</span>
+                        <span>${p.cal} cal</span>
+                    </div>
+                    <div class="product-price">${p.price}</div>
+                </div>
+            `).join('');
+        }
+
+        // Initial render
+        renderProducts('whey');
+
+        // Flavor tabs
+        document.querySelectorAll('.flavor-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.flavor-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderProducts(tab.dataset.type);
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form submission
+        document.getElementById('partnerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.submit-btn');
+            btn.textContent = 'SUBMITTING...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = '✓ REQUEST SENT!';
+                btn.style.background = '#25D366';
+                
+                setTimeout(() => {
+                    btn.textContent = 'REQUEST FREE PILOT →';
+                    btn.style.background = '';
+                    btn.disabled = false;
+                    e.target.reset();
+                }, 3000);
+            }, 1500);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu (basic toggle)
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            this.classList.toggle('active');
+            // Add mobile menu logic here if needed
+        });
+    </script>
+</body>
+</html>
