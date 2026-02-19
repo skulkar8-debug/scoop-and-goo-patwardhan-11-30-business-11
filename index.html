@@ -80,19 +80,19 @@
             text-decoration: none;
         }
 
-        .logo-placeholder {
-            width: 140px;
+        .logo-img {
             height: 45px;
-            background: linear-gradient(135deg, rgba(255, 127, 0, 0.2), rgba(255, 127, 0, 0.05));
-            border: 2px dashed rgba(255, 127, 0, 0.4);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            color: rgba(255, 127, 0, 0.7);
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            width: auto;
+            max-width: 160px;
+            object-fit: contain;
+        }
+
+        .footer-logo-img {
+            height: 55px;
+            width: auto;
+            max-width: 180px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
         }
 
         .nav-links {
@@ -1336,22 +1336,6 @@
             gap: 3rem;
         }
 
-        .footer-logo-placeholder {
-            width: 160px;
-            height: 50px;
-            background: linear-gradient(135deg, rgba(255, 127, 0, 0.15), rgba(255, 127, 0, 0.05));
-            border: 2px dashed rgba(255, 127, 0, 0.3);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            color: rgba(255, 127, 0, 0.6);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-
         .footer-brand p {
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.6);
@@ -1649,7 +1633,7 @@
     <!-- Navigation -->
     <nav class="nav" id="navbar">
         <a href="#" class="logo">
-            <div class="logo-placeholder">[ Logo.png ]</div>
+            <img src="logo.png" alt="Scoop & Goo" class="logo-img">
         </a>
         <div class="nav-links">
             <a href="#how-it-works">How It Works</a>
@@ -1998,7 +1982,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <div class="footer-logo-placeholder">[ Logo.png ]</div>
+                <img src="logo.png" alt="Scoop & Goo" class="footer-logo-img">
                 <p>Instant shakes from smart vending machines. Making post-workout nutrition as quick as your local chai.</p>
             </div>
             <div class="footer-section">
